@@ -22,9 +22,3 @@ export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 if (process.env.NODE_ENV !== 'production') {
     globalForPrisma.prisma = prisma;
 }
-
-console.log("Prisma verification delegate:", !!prisma.verification);
-console.log(
-  "Prisma models:",
-  Object.keys(prisma).filter((key) => !key.startsWith("_"))
-);
