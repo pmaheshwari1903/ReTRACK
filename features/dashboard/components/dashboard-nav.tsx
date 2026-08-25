@@ -18,26 +18,27 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-type DashboardRoute =
-  | "/dashboard"
-  | "/dashboard/repositories"
-  | "/dashboard/github"
-  | "/dashboard/settings";
+import {
+  DASHBOARD_NAV_ITEMS,
+  DashboardRoute,
+} from "@/features/dashboard/lib/routes";
 
-const DASHBOARD_NAV_ITEMS = [
-  { title: "Overview", href: "/dashboard", icon: "layout-dashboard" },
-  {
-    title: "Repositories",
-    href: "/dashboard/repositories",
-    icon: "folder-git-2",
-  },
-  { title: "GitHub", href: "/dashboard/github", icon: "github" },
-  { title: "Settings", href: "/dashboard/settings", icon: "settings" },
-] as const satisfies ReadonlyArray<{
-  title: string;
-  href: DashboardRoute;
-  icon: keyof typeof NAV_ICONS;
-}>;
+// type DashboardRoute =
+//   | "/dashboard"
+//   | "/dashboard/repositories"
+//   | "/dashboard/github"
+//   | "/dashboard/settings";
+
+// const DASHBOARD_NAV_ITEMS = [
+//   { title: "Overview", href: "/dashboard", icon: "layout-dashboard" },
+//   {title: "Repositories", href: "/dashboard/repositories", icon: "folder-git-2",},
+//   { title: "GitHub", href: "/dashboard/github", icon: "github" },
+//   { title: "Settings", href: "/dashboard/settings", icon: "settings" },
+// ] as const satisfies ReadonlyArray<{
+//   title: string;
+//   href: DashboardRoute;
+//   icon: keyof typeof NAV_ICONS;
+// }>;
 
 const NAV_ICONS = {
   "layout-dashboard": LayoutIcon ,
