@@ -12,7 +12,7 @@ export async function savePullRequest(payload: PullRequestWebhookPayload) {
     const repoFullName = payload.repository.full_name;
     const prNumber = payload.pull_request.number;
 
-    const pull_request = await prisma.pullRequest.upsert({
+    return prisma.pullRequest.upsert({
         where: {
             repoFullName_prNumber: {
                 repoFullName,

@@ -1,4 +1,5 @@
 import { savePullRequest } from "@/features/reviews/server/save-pull-request";
+import { inngest } from "@/features/inngest/client";
 import { getGithubApp } from "../utils/github-app";
 
 const REVIEWABLE_ACTIONS = ["opened", "synchronize", "reopened"];
@@ -53,9 +54,10 @@ export async function handleGithubWebhook(req: Request) {
 
     const pullRequest = await savePullRequest(event);
 
-    // todo : add github's installation id
-
-    // Todo : TriggerReviewJob
+    await inngest.send({
+        name: "github/pr.received",
+        data: { pullRequestId: pullRequest.id },
+    });
 
     return Response.json({ received: true });
 }
