@@ -1,19 +1,24 @@
 import { betterAuth } from "better-auth";
-import {prismaAdapter} from "better-auth/adapters/prisma";
+import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
 import { nextCookies } from "better-auth/next-js";
 
-console.log("AUTH PRISMA VERIFICATION:", !!prisma.verification);
+// console.log("AUTH PRISMA VERIFICATION:", !!prisma.verification);
 
 export const auth = betterAuth({
-    database: prismaAdapter(prisma, {
-        provider: "postgresql",
-    }),
-    socialProviders: { 
-    github: { 
-      clientId: process.env.GITHUB_CLIENT_ID as string, 
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string, 
-    }, 
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
+  socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+
+      mapProfileToUser: async (profile) => ({
+        email: profile.email ?? `${profile.id}@users.noreply.github.com`,
+        name: profile.name ?? profile.login,
+      })
+    },
   },
 
   plugins: [nextCookies()] // make sure this is the last plugin in the array
