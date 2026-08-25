@@ -15,15 +15,6 @@ export function getGithubApp() {
       .update(privateKey)
       .digest("hex");
 
-    console.log("PRIVATE KEY HASH:", hash);
-
-    try {
-      crypto.createPrivateKey(privateKey);
-      console.log("✅ PRIVATE KEY IS VALID");
-    } catch (error) {
-      console.error("❌ PRIVATE KEY IS INVALID:", error);
-    }
-
     githubApp = new App({
       appId: process.env.GITHUB_APP_ID!,
       privateKey,
