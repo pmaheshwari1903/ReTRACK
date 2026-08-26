@@ -1,98 +1,110 @@
 import { inngest } from "@/features/inngest/client";
 import { prisma } from "@/lib/db";
-import { getPullRequestFiles } from "./pr-files";
-import { chunkPrFiles } from "../utils/chunk-code";
+import { formatPrFilesForReview, getPullRequestFiles } from "./pr-files";
 import { generateReview } from "./generate-review";
-import { getGithubApp } from "@/features/github/utils/github-app";
+import { postPrComment } from "./post-pr-comment";
+import { chunkPrFiles } from "../utils/chunk-code";
+import {buildPrNamespace, saveChunksToPinecone, searchPrContext} from "./vector";
+import { buildRepoNamespace } from "@/features/repo-sync/server/repo-sync";
+
 
 export const reviewPullRequest = inngest.createFunction(
-    {
-        id: "review-pull-request",
-        triggers: { event: "github/pr.received" },
-    },
+    { id: "review-pull-request", triggers: { event: "github/pr.received" } },
     async ({ event, step }) => {
-        const pullRequestId = event.data.pullRequestId;
-
-        const pullRequest = await step.run("mark-processing", async () => {
-            return prisma.pullRequest.update({
-                where: { id: pullRequestId },
-                data: { status: "processing" },
-            });
+      const pullRequestId = event.data.pullRequestId;
+  
+      const pullRequest = await step.run("mark-processing", async () => {
+        return prisma.pullRequest.update({
+          where: { id: pullRequestId },
+          data: { status: "processing" },
         });
-
-        const files = await step.run("fetch-pull-request-diff", async () => {
-            return getPullRequestFiles(
-                pullRequest.installationId,
-                pullRequest.repoFullName,
-                pullRequest.prNumber
-            );
+      });
+  
+      const chunks = await step.run("breakdown-code", async () => {
+        const files = await getPullRequestFiles(
+          pullRequest.installationId,
+          pullRequest.repoFullName,
+          pullRequest.prNumber
+        );
+  
+        // Turn unified diffs into fixed-size chunks for embedding
+        return chunkPrFiles(pullRequest.prNumber, files);
+      });
+  
+      if (chunks.length === 0) {
+        await step.run("mark-reviewed-no-code", async () => {
+          await prisma.pullRequest.update({
+            where: { id: pullRequestId },
+            data: { status: "reviewed" },
+          });
         });
-
-        const chunks = chunkPrFiles(pullRequest.prNumber, files);
-
-        if (chunks.length === 0) {
-            await step.run("mark-reviewed-no-code", async () => {
-                return prisma.pullRequest.update({
-                    where: { id: pullRequestId },
-                    data: { status: "reviewed" },
-                });
-            });
-
-            return {
-                pullRequestId,
-                status: "reviewed",
-                reason: "no code changes",
-            };
+  
+        return { pullRequestId, status: "reviewed", reason: "no code to review" };
+      }
+  
+      // PR namespace isolates this diff from other PRs and from repo-wide sync data
+      const namespace = buildPrNamespace(
+        pullRequest.repoFullName,
+        pullRequest.prNumber
+      );
+  
+      await step.run("save-vectors-to-pinecone", async () => {
+        await saveChunksToPinecone(namespace, chunks);
+      });
+  
+      // Pinecone needs a short delay before new vectors appear in search results
+      await step.sleep("wait-for-vectors-to-index", "10s");
+  
+      // Extra context from the on-demand codebase sync, when the repo was synced
+      const repoContextSnippets = await step.run("search-repo-context", async () => {
+        const repoSync = await prisma.repoSync.findUnique({
+          where: { repoFullName: pullRequest.repoFullName },
+        });
+  
+        if (!repoSync || repoSync.status !== "synced") {
+          return [];
         }
-
-        const review = await step.run("generate-ai-review", async () => {
-            return generateReview({
-                repoFullName: pullRequest.repoFullName,
-                title: pullRequest.title,
-                diff: files
-                    .map((file) => `diff --git a/${file.filePath} b/${file.filePath}\n${file.patch}`)
-                    .join("\n\n"),
-            })
-        })
-
-        await step.run("post-pr-comment", async () => {
-            await postPrComment(
-                pullRequest.installationId, 
-                pullRequest.repoFullName, 
-                pullRequest.prNumber, 
-                review);
+  
+        const repoNamespace = buildRepoNamespace(pullRequest.repoFullName);
+        return searchPrContext(repoNamespace, pullRequest.title);
+      });
+  
+      const review = await step.run("generate-ai-review", async () => {
+        // Search within this PR's namespace for chunks related to the PR title
+        const contextSnippets = await searchPrContext(
+          namespace,
+          pullRequest.title
+        );
+  
+        return generateReview({
+          repoFullName: pullRequest.repoFullName,
+          title: pullRequest.title,
+          contextSnippets,
+          repoContextSnippets,
         });
-
-        await step.run("mark-reviewed", async () => {
-            await prisma.pullRequest.update({
-                where: { id: pullRequestId },
-                data: {
-                    status: "reviewed",
-                    reviewComment: review,
-                    reviewedAt: new Date(),
-                },
-            })
-        })
+      });
+  
+      await step.run("post-pr-comment", async () => {
+        await postPrComment(
+          pullRequest.installationId,
+          pullRequest.repoFullName,
+          pullRequest.prNumber,
+          review
+        );
+      });
+  
+      await step.run("mark-reviewed", async () => {
+        await prisma.pullRequest.update({
+          where: { id: pullRequestId },
+          data: {
+            status: "reviewed",
+            reviewComment: review,
+            reviewedAt: new Date(),
+          },
+        });
+      });
+  
+      return { pullRequestId, status: "reviewed" };
     }
-);
-
-async function postPrComment(
-    installationId: number,
-    repoFullName: string,
-    prNumber: number,
-    review: string
-) {
-    const app = getGithubApp();
-    const octokit = await app.getInstallationOctokit(installationId);
-    const [owner, repo] = repoFullName.split("/");
-
-    await octokit.request(
-        "POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
-        {
-            owner,
-            repo,
-            issue_number: prNumber,
-            body: review,
-        }
-    );
-}
+  );
+  

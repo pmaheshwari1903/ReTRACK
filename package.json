@@ -12,6 +12,7 @@
     "@base-ui/react": "^1.7.0",
     "@openrouter/ai-sdk-provider": "^3.0.0",
     "@phosphor-icons/react": "^2.1.10",
+    "@pinecone-database/pinecone": "^8.2.0",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@shadcn/react": "^0.3.0",
