@@ -40,11 +40,19 @@ export async function saveRepoChunks(namespace: string, chunks: CodeChunk[]) {
   for (let start = 0; start < chunks.length; start += UPSERT_BATCH_SIZE) {
     const batch = chunks.slice(start, start + UPSERT_BATCH_SIZE);
 
-    const records = batch.map((chunk) => ({
-      id: chunk.id,
-      text: chunk.text,
-      filePath: chunk.filePath,
-    }));
+    // Remove empty chunks before sending them to Pinecone.
+    const records = batch
+      .filter((chunk) => chunk.text && chunk.text.trim().length > 0)
+      .map((chunk) => ({
+        id: chunk.id,
+        text: chunk.text,
+        filePath: chunk.filePath,
+      }));
+
+    // Nothing valid to upload in this batch.
+    if (records.length === 0) {
+      continue;
+    }
 
     await index.namespace(namespace).upsertRecords({ records });
   }
