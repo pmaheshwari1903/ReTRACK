@@ -1,55 +1,66 @@
 "use server";
 
-import {auth} from '@/lib/auth';
-import {headers} from 'next/headers';
-import {redirect} from 'next/navigation';
-import {DEFAULT_AUTH_CALLBACK_URL, getSafeCallbackUrlPath, SIGN_IN_PATH} from '@/features/auth/utils';
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-export async function signInWithGithub(formData: FormData){
-    const callbackValue = formData.get('callbackUrl');
-    const callback = typeof callbackValue === 'string' ? callbackValue : null;
+import {
+  DEFAULT_AUTH_CALLBACK_URL,
+  getSafeCallbackUrlPath,
+  SIGN_IN_PATH,
+} from "@/features/auth/utils";
 
-    const redirectTo = getSafeCallbackUrlPath(callback)
+export async function signInWithGithub(formData: FormData) {
+  const callbackValue = formData.get("callbackUrl");
 
-    const result = await auth.api.signInSocial({
-        body: {
-            provider: "github",
-            callbackURL: redirectTo
-        },
-        headers: await headers()
-    })
-    
-    if(result.url){
-        redirect(result.url);
-    }
+  const callback =
+    typeof callbackValue === "string" ? callbackValue : null;
+
+  const redirectTo = getSafeCallbackUrlPath(callback);
+
+  const res = await auth.api.signInSocial({
+    body: {
+      provider: "github",
+      callbackURL: redirectTo,
+    },
+    headers: await headers(),
+    asResponse: true,
+  });
+
+  const data = await res.json();
+
+  if (data.url) {
+    redirect(data.url);
+  }
 }
 
-
-// we can use this function to get the Logged-in user's session data from the server
-
-export async function getServerSession(){
-    return auth.api.getSession({
-        headers: await headers()
-    });
+// Get the logged-in user's session data from the server.
+export async function getServerSession() {
+  return auth.api.getSession({
+    headers: await headers(),
+  });
 }
 
-// redirecting unauthenticated users to the sign-in page.
-export async function requireAuth(redirectTo : string = SIGN_IN_PATH) {
-    const session = await getServerSession();
+// Redirect unauthenticated users to the sign-in page.
+export async function requireAuth(
+  redirectTo: string = SIGN_IN_PATH
+) {
+  const session = await getServerSession();
 
-    if(!session?.user){
-        redirect(redirectTo);
-    }
+  if (!session?.user) {
+    redirect(redirectTo);
+  }
 
-    return session
+  return session;
 }
 
+// Redirect authenticated users to the dashboard or a specified page.
+export async function requireUnAuth(
+  redirectTo: string = DEFAULT_AUTH_CALLBACK_URL
+) {
+  const session = await getServerSession();
 
-// redirecting authenticated users to the dashboard or a specified page
-export async function requireUnAuth(redirectTo : string = DEFAULT_AUTH_CALLBACK_URL) {
-    const session = await getServerSession();
-
-    if(session?.user){
-        redirect(redirectTo);
-    }
+  if (session?.user) {
+    redirect(redirectTo);
+  }
 }

@@ -29,7 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SettingsProfile } from "@/features/settings/types";
+import { SettingsProfile } from "@/features/settings/types/settings";
 import { UsageSummary } from "@/features/billing/server/usage";
 import { statusBadge } from "../lib/status-style";
 import { CancelSubscriptionButton } from "@/features/billing/components/cancel-subscription-button";
