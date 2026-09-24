@@ -11,14 +11,18 @@ import {
 
 export const syncRepoCodebaseFunction = inngest.createFunction(
     {
-        id: "sync-repo-codebas",
+        id: "sync-repo-codebase",
         triggers: { event: "repo/sync.requested" },
         onFailure: async ({ event }) => {
-            await prisma.repoSync.update({
-                where: { id: event.data.event.data.repoSyncId },
-                data: { status: "failed" },
-            });
-        }
+            const repoSyncId = (event.data?.event?.data as { repoSyncId?: string } | undefined)?.repoSyncId;
+
+            if (repoSyncId) {
+                await prisma.repoSync.update({
+                    where: { id: repoSyncId },
+                    data: { status: "failed" },
+                });
+            }
+        },
     },
 
     async ({ event, step }) => {

@@ -2,8 +2,10 @@ import { getServerSession } from "@/features/auth/actions";
 import { getUserInstallationId } from "@/features/github/server/installation";
 import { getInstallationReposPage } from "@/features/github/server/repos";
 import { getRepoSyncStatuses } from "@/features/repo-sync/server/repo-sync";
-import { dataTagErrorSymbol } from "@tanstack/react-query";
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(request: Request) {
     const session = await getServerSession();

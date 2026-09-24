@@ -98,15 +98,29 @@ export async function getRepoFiles(
 
     const entries = tree.tree.filter(isIndexableFile).slice(0, MAX_FILES);
     const files: RepoFile[] = [];
+    const BATCH_SIZE = 15;
 
-    for (const entry of entries) {
-        const { data: blob } = await octokit.request(
-            "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
-            { owner, repo, file_sha: entry.sha! }
+    for (let i = 0; i < entries.length; i += BATCH_SIZE) {
+        const batch = entries.slice(i, i + BATCH_SIZE);
+        const batchResults = await Promise.all(
+            batch.map(async (entry) => {
+                try {
+                    const { data: blob } = await octokit.request(
+                        "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
+                        { owner, repo, file_sha: entry.sha! }
+                    );
+
+                    const content = Buffer.from(blob.content, "base64").toString("utf-8");
+                    return { filePath: entry.path!, content };
+                } catch {
+                    return null;
+                }
+            })
         );
 
-        const content = Buffer.from(blob.content, "base64").toString("utf-8");
-        files.push({ filePath: entry.path!, content });
+        for (const file of batchResults) {
+            if (file) files.push(file);
+        }
     }
 
     return files;
