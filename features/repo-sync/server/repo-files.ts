@@ -1,20 +1,20 @@
 /**
- * Fetches indexable source files from a GitHub repository branch.
+ * Repository file fetching and chunking.
  *
- * First step of repo sync: walk the git tree, filter to code-like paths,
- * download blob contents, then hand files to `chunkRepoFiles`. Filters keep
- * the Pinecone index small and within starter-tier limits.
+ * Fetches indexable source files from GitHub and converts them
+ * into chunks that can later be embedded into Pinecone.
  */
+
+import type { CodeChunk } from "@/features/reviews/types/review";
 import type { RepoFile } from "@/features/repo-sync/types/repo-sync-types";
+
 import { getGithubApp } from "@/features/github/utils/github-app";
 import { splitRepoFullName } from "@/features/reviews/utils/repo-name";
 
-// Keep the index small and useful: skip huge files and cap the total count
-// so we stay inside the Pinecone starter limits.
 const MAX_FILE_SIZE_BYTES = 100_000;
 const MAX_FILES = 200;
+const MAX_CHUNK_LINES = 80;
 
-/** File extensions we consider worth embedding for code review context */
 const CODE_EXTENSIONS = [
     ".ts",
     ".tsx",
@@ -41,7 +41,6 @@ const CODE_EXTENSIONS = [
     ".yaml",
 ];
 
-/** Paths inside these folders are never indexed (deps, build output, etc.) */
 const SKIPPED_FOLDERS = [
     "node_modules/",
     "dist/",
@@ -58,30 +57,16 @@ type TreeEntry = {
     size?: number;
 };
 
-/**
- * @param path - Repository-relative file path
- * @returns True if the path ends with a known code extension
- */
 function hasCodeExtension(path: string) {
     return CODE_EXTENSIONS.some((extension) => path.endsWith(extension));
 }
 
-/**
- * @param path - Repository-relative file path
- * @returns True if the path lives under a skipped directory
- */
 function isSkippedPath(path: string) {
     return SKIPPED_FOLDERS.some((folder) => path.includes(folder));
 }
 
-/**
- * Decides whether a git tree entry should be downloaded and chunked.
- *
- * @param entry - Single node from GitHub's recursive tree API
- * @returns True for small, text-like blobs in allowed folders
- */
 function isIndexableFile(entry: TreeEntry) {
-    if (entry.type !== "blob" || !entry.path || !entry.sha) {
+    if (!entry.path || !entry.sha || entry.type !== "blob") {
         return false;
     }
 
@@ -96,16 +81,12 @@ function isIndexableFile(entry: TreeEntry) {
     return hasCodeExtension(entry.path);
 }
 
+function buildChunkId(filePath: string, part: number) {
+    return `repo--${filePath}--part-${part}`;
+}
+
 /**
- * Downloads up to `MAX_FILES` indexable files from a branch.
- *
- * Uses the recursive git tree endpoint, then fetches each blob's base64
- * content and decodes to UTF-8 strings for chunking.
- *
- * @param installationId - GitHub App installation id
- * @param repoFullName - Repository in `owner/repo` form
- * @param branch - Branch name or commit sha for the tree root
- * @returns Array of `{ filePath, content }` for `chunkRepoFiles`
+ * Fetch files from GitHub.
  */
 export async function getRepoFiles(
     installationId: number,
@@ -114,25 +95,98 @@ export async function getRepoFiles(
 ): Promise<RepoFile[]> {
     const app = getGithubApp();
     const octokit = await app.getInstallationOctokit(installationId);
+
     const { owner, repo } = splitRepoFullName(repoFullName);
 
     const { data: tree } = await octokit.request(
         "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
-        { owner, repo, tree_sha: branch, recursive: "1" }
+        {
+            owner,
+            repo,
+            tree_sha: branch,
+            recursive: "1",
+        }
     );
 
     const entries = tree.tree.filter(isIndexableFile).slice(0, MAX_FILES);
+
     const files: RepoFile[] = [];
 
-    for (const entry of entries) {
-        const { data: blob } = await octokit.request(
-            "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
-            { owner, repo, file_sha: entry.sha! }
+    const BATCH_SIZE = 15;
+
+    for (let i = 0; i < entries.length; i += BATCH_SIZE) {
+        const batch = entries.slice(i, i + BATCH_SIZE);
+
+        const batchResults = await Promise.all(
+            batch.map(async (entry) => {
+                try {
+                    const { data: blob } = await octokit.request(
+                        "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
+                        {
+                            owner,
+                            repo,
+                            file_sha: entry.sha!,
+                        }
+                    );
+
+                    const content = Buffer.from(
+                        blob.content,
+                        "base64"
+                    ).toString("utf-8");
+
+                    return {
+                        filePath: entry.path!,
+                        content,
+                    };
+                } catch {
+                    return null;
+                }
+            })
         );
 
-        const content = Buffer.from(blob.content, "base64").toString("utf-8");
-        files.push({ filePath: entry.path!, content });
+        for (const file of batchResults) {
+            if (file) {
+                files.push(file);
+            }
+        }
     }
 
     return files;
+}
+
+/**
+ * Split repository files into Pinecone-ready chunks.
+ */
+export function chunkRepoFiles(files: RepoFile[]): CodeChunk[] {
+    const chunks: CodeChunk[] = [];
+
+    for (const file of files) {
+        const lines = file.content.split("\n");
+
+        for (
+            let start = 0;
+            start < lines.length;
+            start += MAX_CHUNK_LINES
+        ) {
+            const text = lines
+                .slice(start, start + MAX_CHUNK_LINES)
+                .join("\n")
+                .trim();
+
+            // Never create empty chunks.
+            if (!text) {
+                continue;
+            }
+
+            const part = start / MAX_CHUNK_LINES;
+
+            chunks.push({
+                id: buildChunkId(file.filePath, part),
+                filePath: file.filePath,
+                text,
+            });
+        }
+    }
+
+    return chunks;
 }

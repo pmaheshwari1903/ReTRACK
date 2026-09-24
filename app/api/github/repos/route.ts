@@ -1,7 +1,7 @@
 import { getServerSession } from "@/features/auth/actions";
 import { getUserInstallationId } from "@/features/github/server/installation";
 import { getInstallationReposPage } from "@/features/github/server/repos";
-import { getRepoSyncStatuses } from "@/features/repo-sync/server/repo-sync";
+import { getRepoSyncStatuses } from "@/features/repo-sync/server/sync-status";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";

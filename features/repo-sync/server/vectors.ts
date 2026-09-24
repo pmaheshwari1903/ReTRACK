@@ -1,59 +1,70 @@
 /**
  * Pinecone vector operations for repository codebase sync.
- *
- * Unlike PR review vectors (one namespace per PR), repo sync uses a single
- * long-lived namespace per repository (`buildRepoNamespace`). Re-syncs delete
- * the old namespace first so stale files do not pollute search results.
  */
+
 import type { CodeChunk } from "@/features/reviews/types/review";
+
 import { getPineconeClient } from "@/features/pinecone/client";
 
-// Pinecone allows at most 96 records per upsert when using integrated embedding
 const UPSERT_BATCH_SIZE = 90;
 
 /**
- * Removes all vectors in a repo's codebase namespace.
- *
- * Called before a re-sync so embeddings always match the latest tree snapshot.
- *
- * @param namespace - Repo namespace from `buildRepoNamespace`
- * @returns Resolves when Pinecone deletes the namespace
+ * Builds the Pinecone namespace for a repository.
+ */
+export function buildRepoNamespace(repoFullName: string) {
+  return `${repoFullName.replace("/", "--")}--codebase`;
+}
+
+/**
+ * Deletes all vectors for a repository namespace.
  */
 export async function deleteRepoNamespace(namespace: string) {
   const index = getPineconeClient();
+
   await index.deleteNamespace(namespace);
 }
 
 /**
- * Upserts repo code chunks in batches to respect Pinecone limits.
+ * Saves repository chunks into Pinecone.
  *
- * Large repos may produce hundreds of chunks; batching avoids API errors and
- * keeps each upsert within integrated-embedding record caps.
- *
- * @param namespace - Repo namespace from `buildRepoNamespace`
- * @param chunks - Output of `chunkRepoFiles`
- * @returns Resolves when all batches are upserted
+ * Empty chunks are filtered before they reach the
+ * integrated embedding model.
  */
-export async function saveRepoChunks(namespace: string, chunks: CodeChunk[]) {
+export async function saveRepoChunks(
+  namespace: string,
+  chunks: CodeChunk[]
+) {
   const index = getPineconeClient();
 
-  for (let start = 0; start < chunks.length; start += UPSERT_BATCH_SIZE) {
-    const batch = chunks.slice(start, start + UPSERT_BATCH_SIZE);
+  for (
+    let start = 0;
+    start < chunks.length;
+    start += UPSERT_BATCH_SIZE
+  ) {
+    const batch = chunks.slice(
+      start,
+      start + UPSERT_BATCH_SIZE
+    );
 
-    // Remove empty chunks before sending them to Pinecone.
     const records = batch
-      .filter((chunk) => chunk.text && chunk.text.trim().length > 0)
+      .filter(
+        (chunk) =>
+          typeof chunk.text === "string" &&
+          chunk.text.trim().length > 0
+      )
       .map((chunk) => ({
         id: chunk.id,
-        text: chunk.text,
+        text: chunk.text.trim(),
         filePath: chunk.filePath,
       }));
 
-    // Nothing valid to upload in this batch.
+    // Never send an empty records array to Pinecone.
     if (records.length === 0) {
       continue;
     }
 
-    await index.namespace(namespace).upsertRecords({ records });
+    await index.namespace(namespace).upsertRecords({
+      records,
+    });
   }
 }
