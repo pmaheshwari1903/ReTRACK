@@ -19,23 +19,33 @@ export async function getPullRequestFiles(
     prNumber: number
 ): Promise<PrFile[]> {
     const app = getGithubApp();
-    const octokit = await app.getInstallationOctokit(installationId)
-    const [owner, repo] = repoFullName.split("/");
+    try {
+        const octokit = await app.getInstallationOctokit(installationId);
+        const [owner, repo] = repoFullName.split("/");
 
-    const { data } = await octokit.request(
-        "GET /repos/{owner}/{repo}/pulls/{pull_number}/files",
-        { owner, repo, pull_number: prNumber, per_page: FILES_PER_PAGE }
-    )
+        const { data } = await octokit.request(
+            "GET /repos/{owner}/{repo}/pulls/{pull_number}/files",
+            { owner, repo, pull_number: prNumber, per_page: FILES_PER_PAGE }
+        );
 
-    const files: PrFile[] = [];
+        const files: PrFile[] = [];
 
-    for (const file of data) {
-        if (!file.patch) {
-            continue;
+        for (const file of data) {
+            if (!file.patch) {
+                continue;
+            }
+
+            files.push({ filePath: file.filename, patch: file.patch });
         }
 
-        files.push({ filePath: file.filename, patch: file.patch });
+        return files;
+    } catch (error: any) {
+        if (error?.status === 404) {
+            console.warn(
+                `GitHub installation ${installationId} or PR #${prNumber} returned 404 Not Found.`
+            );
+            return [];
+        }
+        throw error;
     }
-
-    return files;
 }

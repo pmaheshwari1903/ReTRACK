@@ -69,20 +69,35 @@ export async function getInstallationReposPage(
     page = 1
 ): Promise<InstallationReposPage> {
     const app = getGithubApp();
-    // `getInstallationOctokit` exchanges the App JWT for an installation access token.
-    const octokit = await app.getInstallationOctokit(installationId);
-    const { data } = await octokit.request("GET /installation/repositories", {
-        per_page: REPOS_PER_PAGE,
-        page,
-    });
+    try {
+        // `getInstallationOctokit` exchanges the App JWT for an installation access token.
+        const octokit = await app.getInstallationOctokit(installationId);
+        const { data } = await octokit.request("GET /installation/repositories", {
+            per_page: REPOS_PER_PAGE,
+            page,
+        });
 
-    const totalCount = data.total_count;
-    const repos = data.repositories.map(mapRepo);
+        const totalCount = data.total_count;
+        const repos = data.repositories.map(mapRepo);
 
-    return {
-        repos,
-        totalCount,
-        page,
-        hasMore: page * REPOS_PER_PAGE < totalCount,
-    };
+        return {
+            repos,
+            totalCount,
+            page,
+            hasMore: page * REPOS_PER_PAGE < totalCount,
+        };
+    } catch (error: any) {
+        if (error?.status === 404) {
+            console.warn(
+                `GitHub installation ${installationId} returned 404 Not Found. App may have been uninstalled or ID is invalid.`
+            );
+            return {
+                repos: [],
+                totalCount: 0,
+                page,
+                hasMore: false,
+            };
+        }
+        throw error;
+    }
 }

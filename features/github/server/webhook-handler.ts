@@ -43,6 +43,19 @@ export async function handleGithubWebhook(req: Request) {
         return Response.json({ error: "Invalid signature" }, { status: 401 });
     }
 
+    if (eventName === "installation") {
+        const event = JSON.parse(payload);
+        if (event.action === "deleted" && event.installation?.id) {
+            const installationId = event.installation.id;
+            await prisma.githubInstallation.deleteMany({
+                where: { installationId },
+            });
+            console.log(`GitHub Installation ${installationId} deleted via webhook`);
+            return Response.json({ received: true, deleted: true });
+        }
+        return Response.json({ received: true });
+    }
+
     if (eventName !== "pull_request") {
         return Response.json({ received: true });
     }

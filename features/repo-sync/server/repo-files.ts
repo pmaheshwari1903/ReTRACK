@@ -94,64 +94,74 @@ export async function getRepoFiles(
     branch: string
 ): Promise<RepoFile[]> {
     const app = getGithubApp();
-    const octokit = await app.getInstallationOctokit(installationId);
+    try {
+        const octokit = await app.getInstallationOctokit(installationId);
 
-    const { owner, repo } = splitRepoFullName(repoFullName);
+        const { owner, repo } = splitRepoFullName(repoFullName);
 
-    const { data: tree } = await octokit.request(
-        "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
-        {
-            owner,
-            repo,
-            tree_sha: branch,
-            recursive: "1",
-        }
-    );
-
-    const entries = tree.tree.filter(isIndexableFile).slice(0, MAX_FILES);
-
-    const files: RepoFile[] = [];
-
-    const BATCH_SIZE = 15;
-
-    for (let i = 0; i < entries.length; i += BATCH_SIZE) {
-        const batch = entries.slice(i, i + BATCH_SIZE);
-
-        const batchResults = await Promise.all(
-            batch.map(async (entry) => {
-                try {
-                    const { data: blob } = await octokit.request(
-                        "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
-                        {
-                            owner,
-                            repo,
-                            file_sha: entry.sha!,
-                        }
-                    );
-
-                    const content = Buffer.from(
-                        blob.content,
-                        "base64"
-                    ).toString("utf-8");
-
-                    return {
-                        filePath: entry.path!,
-                        content,
-                    };
-                } catch {
-                    return null;
-                }
-            })
+        const { data: tree } = await octokit.request(
+            "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
+            {
+                owner,
+                repo,
+                tree_sha: branch,
+                recursive: "1",
+            }
         );
 
-        for (const file of batchResults) {
-            if (file) {
-                files.push(file);
+        const entries = tree.tree.filter(isIndexableFile).slice(0, MAX_FILES);
+
+        const files: RepoFile[] = [];
+
+        const BATCH_SIZE = 15;
+
+        for (let i = 0; i < entries.length; i += BATCH_SIZE) {
+            const batch = entries.slice(i, i + BATCH_SIZE);
+
+            const batchResults = await Promise.all(
+                batch.map(async (entry) => {
+                    try {
+                        const { data: blob } = await octokit.request(
+                            "GET /repos/{owner}/{repo}/git/blobs/{file_sha}",
+                            {
+                                owner,
+                                repo,
+                                file_sha: entry.sha!,
+                            }
+                        );
+
+                        const content = Buffer.from(
+                            blob.content,
+                            "base64"
+                        ).toString("utf-8");
+
+                        return {
+                            filePath: entry.path!,
+                            content,
+                        };
+                    } catch {
+                        return null;
+                    }
+                })
+            );
+
+            for (const file of batchResults) {
+                if (file) {
+                    files.push(file);
+                }
             }
         }
-    }
 
-    return files;
+        return files;
+    } catch (error: any) {
+        if (error?.status === 404) {
+            console.warn(
+                `GitHub installation ${installationId} or repo ${repoFullName} returned 404 Not Found.`
+            );
+            return [];
+        }
+        throw error;
+    }
 }
 
 /**

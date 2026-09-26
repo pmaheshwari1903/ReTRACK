@@ -7,13 +7,23 @@ export async function postPrComment(
     body: string
 ) {
     const app = getGithubApp();
-    const octokit = await app.getInstallationOctokit(installationId);
-    const [owner, repo] = repoFullName.split("/");
+    try {
+        const octokit = await app.getInstallationOctokit(installationId);
+        const [owner, repo] = repoFullName.split("/");
 
-    await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
-        owner,
-        repo,
-        issue_number: prNumber,
-        body,
-    });
+        await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
+            owner,
+            repo,
+            issue_number: prNumber,
+            body,
+        });
+    } catch (error: any) {
+        if (error?.status === 404) {
+            console.warn(
+                `Failed to post PR comment: Installation ${installationId} or repo ${repoFullName} returned 404 Not Found.`
+            );
+            return;
+        }
+        throw error;
+    }
 }
