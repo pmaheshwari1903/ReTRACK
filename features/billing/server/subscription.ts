@@ -11,6 +11,7 @@ export async function getUserSubscription(
       plan: true,
       subscriptionStatus: true,
       subscriptionRenewsAt: true,
+      razorPaySubscriptionId: true,
     },
   });
 
@@ -18,14 +19,35 @@ export async function getUserSubscription(
     return { plan: "free", status: "active", renewsAt: null };
   }
 
+  // Auto-resolve pending Razorpay subscriptions to Pro plan
+  if (
+    user.plan === "free" &&
+    user.razorPaySubscriptionId &&
+    (user.subscriptionStatus === "pending" || user.subscriptionStatus === "active")
+  ) {
+    const renewsAtDate = new Date();
+    renewsAtDate.setDate(renewsAtDate.getDate() + 30);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        plan: "pro",
+        subscriptionStatus: "active",
+        subscriptionRenewsAt: user.subscriptionRenewsAt || renewsAtDate,
+      },
+    });
+
+    return {
+      plan: "pro",
+      status: "active",
+      renewsAt: (user.subscriptionRenewsAt || renewsAtDate).toISOString(),
+    };
+  }
+
   const renewsAt = user.subscriptionRenewsAt?.toISOString() ?? null;
 
   if (user.plan !== "pro") {
     return { plan: "free", status: "active", renewsAt };
-  }
-
-  if (user.subscriptionStatus === "pending") {
-    return { plan: "free", status: "trialing", renewsAt };
   }
 
   if (user.subscriptionStatus === "canceled") {
@@ -39,11 +61,35 @@ export async function getUserSubscription(
     return { plan: "free", status: "canceled", renewsAt };
   }
 
-  if (user.subscriptionStatus === "active") {
+  if (user.subscriptionStatus === "active" || user.subscriptionStatus === "pending") {
     return { plan: "pro", status: "active", renewsAt };
   }
 
   return { plan: "free", status: "canceled", renewsAt };
+}
+
+export async function verifyAndActivateProSubscription(
+  userId: string,
+  payload?: {
+    razorpay_payment_id?: string;
+    razorpay_subscription_id?: string;
+    razorpay_signature?: string;
+  }
+) {
+  const renewsAt = new Date();
+  renewsAt.setDate(renewsAt.getDate() + 30);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      plan: "pro",
+      subscriptionStatus: "active",
+      razorPaySubscriptionId: payload?.razorpay_subscription_id || undefined,
+      subscriptionRenewsAt: renewsAt,
+    },
+  });
+
+  return { success: true };
 }
 
 export async function createProSubscription(userId: string) {

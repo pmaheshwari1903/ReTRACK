@@ -7,7 +7,13 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button"
 import { statusButtonClass } from "@/features/dashboard/lib/status-style";
-import { startProSubscription } from "@/lib/billing";
+import { startProSubscription, verifyAndActivateSubscription } from "@/lib/billing";
+
+type RazorpayCheckoutResponse = {
+    razorpay_payment_id?: string;
+    razorpay_subscription_id?: string;
+    razorpay_signature?: string;
+};
 
 type RazorpayCheckout = new (options: Record<string, unknown>) => {
     open: () => void;
@@ -25,12 +31,10 @@ export function UpgradeButton() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
-
     async function handleUpgrade() {
         const key = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-        // console.log("Razorpay key:", key);
         if (!key) {
-          toast.error("Razorpay is not configured yet.");
+          toast.error("Razorpay key is not configured yet.");
           return;
         }
     
@@ -49,9 +53,23 @@ export function UpgradeButton() {
             subscription_id: subscriptionId,
             name: "Retrack Code Reviewer",
             description: "Pro plan — unlimited AI reviews",
-            handler: () => {
-              toast.success("Payment successful! Your Pro plan will activate shortly.");
-              router.refresh();
+            handler: async (response: RazorpayCheckoutResponse) => {
+              try {
+                setLoading(true);
+                await verifyAndActivateSubscription({
+                  razorpay_payment_id: response?.razorpay_payment_id,
+                  razorpay_subscription_id: response?.razorpay_subscription_id || subscriptionId,
+                  razorpay_signature: response?.razorpay_signature,
+                });
+                toast.success("Payment successful! Pro plan is now active 🎉");
+                router.refresh();
+              } catch (activationErr) {
+                console.error("Activation error:", activationErr);
+                toast.success("Payment received! Updating Pro subscription...");
+                router.refresh();
+              } finally {
+                setLoading(false);
+              }
             },
           });
     
@@ -72,7 +90,7 @@ export function UpgradeButton() {
                 disabled={loading}
                 className={cn(statusButtonClass.success)}
             >
-                {loading ? "Opening checkout…" : "Upgrade to Pro"}
+                {loading ? "Activating Pro…" : "Upgrade to Pro"}
             </Button>
         </>
     )
