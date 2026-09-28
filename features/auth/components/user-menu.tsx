@@ -82,7 +82,7 @@ export function UserMenu({
 		await authClient.signOut({
 			fetchOptions: {
 				onSuccess: () => {
-					router.push(SIGN_IN_PATH);
+					router.push("/");
 					router.refresh();
 				},
 			},
