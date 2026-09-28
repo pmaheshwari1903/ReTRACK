@@ -617,7 +617,7 @@ export default function Home() {
                 <h3 className="text-2xl font-bold text-white">Pro Developer</h3>
                 <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/40">Popular</Badge>
               </div>
-              <div className="font-mono text-4xl font-extrabold text-white mb-6">$19 <span className="text-sm text-zinc-400 font-sans font-normal">/ month</span></div>
+              <div className="font-mono text-4xl font-extrabold text-white mb-6">₹999 <span className="text-sm text-zinc-400 font-sans font-normal">/ month</span></div>
 
               <ul className="space-y-3 text-sm text-zinc-300 mb-8">
                 <li className="flex items-center gap-2">
