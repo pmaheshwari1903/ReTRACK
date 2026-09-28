@@ -98,7 +98,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f8f6f0] dark:bg-[#0a0a0c] text-stone-900 dark:text-stone-100 font-sans selection:bg-emerald-500/20 selection:text-emerald-800 dark:selection:text-emerald-200 relative overflow-x-hidden transition-colors duration-200">
-      
+
       {/* Structural Minimal Grid Pattern */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#e5e1d8_1px,transparent_1px),linear-gradient(to_bottom,#e5e1d8_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1b1a1f_1px,transparent_1px),linear-gradient(to_bottom,#1b1a1f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 z-0" />
 
@@ -170,7 +170,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative z-10 pt-20 pb-16 px-6 max-w-7xl mx-auto text-center">
-        
+
         {/* Top Minimal Badge */}
         <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-mono mb-8 shadow-sm">
           <span className="size-2 rounded-full bg-emerald-500 animate-ping inline-block"></span>
@@ -573,16 +573,10 @@ export default function Home() {
 
               <ul className="space-y-3 text-sm text-stone-700 dark:text-stone-300 mb-8">
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Up to 3 GitHub Repositories
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Upto 5 GitHub PR Reviews only
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Unlimited Automated PR Reviews
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Standard Pinecone Vector Indexing
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Single GitHub Sign-In Access
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Pinecone Vector Indexing
                 </li>
               </ul>
             </div>
@@ -607,16 +601,10 @@ export default function Home() {
 
               <ul className="space-y-3 text-sm text-stone-700 dark:text-stone-300 mb-8">
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Unlimited GitHub Repositories
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Unlimited GitHub PR Reviews
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Priority Pinecone Vector Indexing
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Custom Team Rules & Guidelines
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> In-depth Security & OWASP Audits
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Pinecone Vector Indexing
                 </li>
               </ul>
             </div>
