@@ -97,7 +97,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f6f0] dark:bg-[#0a0a0c] text-stone-900 dark:text-stone-100 font-sans selection:bg-rose-500/20 selection:text-rose-800 dark:selection:text-rose-200 relative overflow-x-hidden transition-colors duration-200">
+    <div className="min-h-screen bg-[#f8f6f0] dark:bg-[#0a0a0c] text-stone-900 dark:text-stone-100 font-sans selection:bg-emerald-500/20 selection:text-emerald-800 dark:selection:text-emerald-200 relative overflow-x-hidden transition-colors duration-200">
       
       {/* Structural Minimal Grid Pattern */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#e5e1d8_1px,transparent_1px),linear-gradient(to_bottom,#e5e1d8_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1b1a1f_1px,transparent_1px),linear-gradient(to_bottom,#1b1a1f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 z-0" />
@@ -117,24 +117,21 @@ export default function Home() {
               />
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-base tracking-tight text-stone-900 dark:text-stone-100 group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">
+              <span className="font-semibold text-base tracking-tight text-stone-900 dark:text-stone-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                 ReTrack
-              </span>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-stone-400 dark:text-stone-500 border-l border-stone-300 dark:border-stone-800 pl-2">
-                リトラック
               </span>
             </div>
           </Link>
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-wider text-stone-600 dark:text-stone-400">
-            <a href="#features" className="hover:text-rose-600 dark:hover:text-rose-400 transition-colors">
+            <a href="#features" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
               Features
             </a>
-            <a href="#how-it-works" className="hover:text-rose-600 dark:hover:text-rose-400 transition-colors">
+            <a href="#how-it-works" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
               Workflow
             </a>
-            <a href="#pricing" className="hover:text-rose-600 dark:hover:text-rose-400 transition-colors">
+            <a href="#pricing" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
               Pricing
             </a>
           </nav>
@@ -163,7 +160,7 @@ export default function Home() {
                   label="Sign Up with GitHub"
                   variant="default"
                   size="sm"
-                  className="rounded-md bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs px-4 border border-rose-700 shadow-sm"
+                  className="rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs px-4 border border-emerald-700 shadow-sm"
                 />
               </div>
             )}
@@ -174,18 +171,18 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative z-10 pt-20 pb-16 px-6 max-w-7xl mx-auto text-center">
         
-        {/* Japanese Hanko / Red Stamp Badge */}
-        <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-md border border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-400 text-xs font-mono mb-8 shadow-sm">
-          <span className="size-2 rounded-full bg-rose-600 animate-ping inline-block"></span>
-          <span>コードレビュー · AI Code Reviewer</span>
-          <span className="text-rose-400/50">|</span>
-          <span className="text-stone-600 dark:text-stone-400">Pinecone RAG</span>
+        {/* Top Minimal Badge */}
+        <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-mono mb-8 shadow-sm">
+          <span className="size-2 rounded-full bg-emerald-500 animate-ping inline-block"></span>
+          <span>AI Code Reviewer</span>
+          <span className="text-emerald-400/50">|</span>
+          <span className="text-stone-600 dark:text-stone-400">Pinecone RAG Context</span>
         </div>
 
         {/* Hero Title */}
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-stone-900 dark:text-white max-w-4xl mx-auto leading-[1.15] mb-6">
           Automate Code Reviews with <br className="hidden sm:inline" />
-          <span className="text-rose-600 dark:text-rose-500">
+          <span className="text-emerald-600 dark:text-emerald-500">
             Full Repository Context
           </span>
         </h1>
@@ -198,7 +195,7 @@ export default function Home() {
         {/* Hero Action Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           {session?.user ? (
-            <Button asChild size="lg" className="rounded-md bg-rose-600 hover:bg-rose-700 text-white font-medium px-8 py-6 text-base shadow-sm transition-transform hover:scale-105">
+            <Button asChild size="lg" className="rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-8 py-6 text-base shadow-sm transition-transform hover:scale-105">
               <Link href="/dashboard">
                 Go to Dashboard <ArrowRightIcon className="size-5 ml-2" />
               </Link>
@@ -207,7 +204,7 @@ export default function Home() {
             <GithubAuthButton
               label="Sign Up with GitHub"
               size="lg"
-              className="rounded-md bg-rose-600 hover:bg-rose-700 text-white font-medium px-8 py-6 text-base shadow-sm transition-transform hover:scale-105"
+              className="rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-8 py-6 text-base shadow-sm transition-transform hover:scale-105"
             />
           )}
 
@@ -221,7 +218,7 @@ export default function Home() {
 
         {/* Quick Install Banner */}
         <div className="inline-flex items-center gap-3 px-4 py-2 rounded-md bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-800 font-mono text-xs text-stone-600 dark:text-stone-400 mb-16 shadow-sm">
-          <TerminalWindowIcon className="size-4 text-rose-600 dark:text-rose-400" />
+          <TerminalWindowIcon className="size-4 text-emerald-600 dark:text-emerald-400" />
           <span>Quick Setup:</span>
           <code className="text-stone-900 dark:text-stone-200">npx retrack-cli@latest init</code>
           <button
@@ -242,7 +239,7 @@ export default function Home() {
               <span className="size-2.5 rounded-full bg-amber-500 inline-block"></span>
               <span className="size-2.5 rounded-full bg-emerald-500 inline-block"></span>
               <span className="ml-2 font-mono text-xs text-stone-400 flex items-center gap-1.5">
-                <GitPullRequestIcon className="size-4 text-rose-400" />
+                <GitPullRequestIcon className="size-4 text-emerald-400" />
                 retrack-org / code-reviewer · <span className="text-stone-200">PR #42</span>
               </span>
             </div>
@@ -254,7 +251,7 @@ export default function Home() {
                 className={cn(
                   "px-3 py-1 rounded transition-colors",
                   activeTab === "diff"
-                    ? "bg-rose-600/20 text-rose-300 border border-rose-500/40 font-medium"
+                    ? "bg-emerald-600/20 text-emerald-300 border border-emerald-500/40 font-medium"
                     : "text-stone-400 hover:text-stone-200"
                 )}
               >
@@ -265,7 +262,7 @@ export default function Home() {
                 className={cn(
                   "px-3 py-1 rounded transition-colors",
                   activeTab === "summary"
-                    ? "bg-rose-600/20 text-rose-300 border border-rose-500/40 font-medium"
+                    ? "bg-emerald-600/20 text-emerald-300 border border-emerald-500/40 font-medium"
                     : "text-stone-400 hover:text-stone-200"
                 )}
               >
@@ -276,7 +273,7 @@ export default function Home() {
                 className={cn(
                   "px-3 py-1 rounded transition-colors",
                   activeTab === "context"
-                    ? "bg-rose-600/20 text-rose-300 border border-rose-500/40 font-medium"
+                    ? "bg-emerald-600/20 text-emerald-300 border border-emerald-500/40 font-medium"
                     : "text-stone-400 hover:text-stone-200"
                 )}
               >
@@ -312,13 +309,13 @@ export default function Home() {
                 </div>
 
                 {/* ReTrack AI Bot Comment Card */}
-                <div className="mt-4 rounded-md border border-rose-500/40 bg-rose-950/20 p-4 relative shadow-md">
+                <div className="mt-4 rounded-md border border-emerald-500/40 bg-emerald-950/20 p-4 relative shadow-md">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <div className="size-5 rounded bg-rose-600 flex items-center justify-center text-white text-xs">
-                        印
+                      <div className="size-5 rounded bg-emerald-600 flex items-center justify-center text-white text-xs">
+                        <SparkleIcon className="size-3.5" />
                       </div>
-                      <span className="font-semibold text-xs text-rose-200">ReTrack AI Reviewer</span>
+                      <span className="font-semibold text-xs text-emerald-200">ReTrack AI Reviewer</span>
                       <Badge className="bg-emerald-950 text-emerald-400 border-emerald-800 text-[10px]">
                         99.2% Vector Context Match
                       </Badge>
@@ -327,11 +324,11 @@ export default function Home() {
                   </div>
 
                   <p className="text-xs text-stone-300 mb-3 leading-normal">
-                    ⚠️ <strong>Security Advisory:</strong> Prevents potential open redirect vulnerabilities by using <code className="bg-rose-950/60 text-rose-200 px-1 rounded border border-rose-900">getSafeCallbackUrlPath()</code> from <code className="text-stone-300">features/auth/utils</code>. Verified against your codebase standards.
+                    ⚠️ <strong>Security Advisory:</strong> Prevents potential open redirect vulnerabilities by using <code className="bg-emerald-950/60 text-emerald-200 px-1 rounded border border-emerald-900">getSafeCallbackUrlPath()</code> from <code className="text-stone-300">features/auth/utils</code>. Verified against your codebase standards.
                   </p>
 
-                  <div className="flex items-center gap-2 pt-2 border-t border-rose-500/20 text-xs">
-                    <Button size="sm" className="h-7 bg-rose-600 hover:bg-rose-700 text-white rounded text-xs gap-1">
+                  <div className="flex items-center gap-2 pt-2 border-t border-emerald-500/20 text-xs">
+                    <Button size="sm" className="h-7 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs gap-1">
                       <CheckIcon className="size-3" /> Auto-approve PR
                     </Button>
                     <span className="text-stone-500 text-[11px]">Indexed via Pinecone vector namespace <code className="text-stone-400 font-mono">repo_retrack_v1</code></span>
@@ -345,7 +342,7 @@ export default function Home() {
                 <div className="p-4 rounded-md bg-stone-900 border border-stone-800 space-y-3">
                   <div className="flex items-center justify-between">
                     <h4 className="text-xs font-semibold text-stone-200 uppercase tracking-wider flex items-center gap-2">
-                      <BrainIcon className="size-4 text-rose-400" /> Executive Code Review Analysis
+                      <BrainIcon className="size-4 text-emerald-400" /> Executive Code Review Analysis
                     </h4>
                     <span className="text-xs text-emerald-400 font-mono">Status: PASS (With 1 Suggestion)</span>
                   </div>
@@ -359,7 +356,7 @@ export default function Home() {
                       <span><strong>Performance:</strong> Zero extra DB queries added; utilizes cached Better-Auth session.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ShieldCheckIcon className="size-4 text-rose-400 shrink-0 mt-0.5" />
+                      <ShieldCheckIcon className="size-4 text-emerald-400 shrink-0 mt-0.5" />
                       <span><strong>Security Audit:</strong> Fixed open redirect parameter sanitization. No secrets exposed.</span>
                     </li>
                   </ul>
@@ -373,13 +370,13 @@ export default function Home() {
                 <div className="p-3 rounded bg-stone-950 border border-stone-800 space-y-2 text-stone-300">
                   <div className="flex items-center justify-between text-stone-400">
                     <span>1. Query: &quot;auth redirect safety utility&quot;</span>
-                    <span className="text-rose-400">Score: 0.984</span>
+                    <span className="text-emerald-400">Score: 0.984</span>
                   </div>
                   <div className="text-emerald-400 text-[11px] pl-4">→ Match: features/auth/utils/index.ts (Line 6-11)</div>
 
                   <div className="flex items-center justify-between text-stone-400 pt-2 border-t border-stone-900">
                     <span>2. Query: &quot;BetterAuth social signin provider callback&quot;</span>
-                    <span className="text-rose-400">Score: 0.951</span>
+                    <span className="text-emerald-400">Score: 0.951</span>
                   </div>
                   <div className="text-emerald-400 text-[11px] pl-4">→ Match: lib/auth.ts & lib/auth-client.ts</div>
                 </div>
@@ -397,7 +394,7 @@ export default function Home() {
             <div className="text-xs text-stone-600 dark:text-stone-400 font-mono uppercase">Review Speed</div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-rose-600 dark:text-rose-400 mb-1 font-mono">100%</div>
+            <div className="text-3xl sm:text-4xl font-extrabold text-emerald-600 dark:text-emerald-400 mb-1 font-mono">100%</div>
             <div className="text-xs text-stone-600 dark:text-stone-400 font-mono uppercase">Pinecone Vector Context</div>
           </div>
           <div>
@@ -405,7 +402,7 @@ export default function Home() {
             <div className="text-xs text-stone-600 dark:text-stone-400 font-mono uppercase">Instant Webhooks</div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-rose-600 dark:text-rose-400 mb-1 font-mono">1-Click</div>
+            <div className="text-3xl sm:text-4xl font-extrabold text-emerald-600 dark:text-emerald-400 mb-1 font-mono">1-Click</div>
             <div className="text-xs text-stone-600 dark:text-stone-400 font-mono uppercase">GitHub Integration</div>
           </div>
         </div>
@@ -414,8 +411,8 @@ export default function Home() {
       {/* Features Grid Section */}
       <section id="features" className="py-24 px-6 max-w-7xl mx-auto relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <Badge className="bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20 text-xs px-3 py-1 mb-4 font-mono">
-            機能 · Powerful AI Engine
+          <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 text-xs px-3 py-1 mb-4 font-mono">
+            Powerful AI Engine
           </Badge>
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-stone-900 dark:text-white mb-4">
             Context-Aware Code Intelligence
@@ -427,8 +424,8 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Feature 1 */}
-          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-rose-500/50 transition-all group shadow-sm">
-            <div className="size-10 rounded bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 mb-6 group-hover:scale-105 transition-transform">
+          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-emerald-500/50 transition-all group shadow-sm">
+            <div className="size-10 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-6 group-hover:scale-105 transition-transform">
               <CpuIcon className="size-5" />
             </div>
             <h3 className="text-lg font-semibold text-stone-900 dark:text-white mb-2">Pinecone Vector Storage</h3>
@@ -438,8 +435,8 @@ export default function Home() {
           </div>
 
           {/* Feature 2 */}
-          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-rose-500/50 transition-all group shadow-sm">
-            <div className="size-10 rounded bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 mb-6 group-hover:scale-105 transition-transform">
+          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-emerald-500/50 transition-all group shadow-sm">
+            <div className="size-10 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-6 group-hover:scale-105 transition-transform">
               <LightningIcon className="size-5" />
             </div>
             <h3 className="text-lg font-semibold text-stone-900 dark:text-white mb-2">Automated PR Webhooks</h3>
@@ -449,8 +446,8 @@ export default function Home() {
           </div>
 
           {/* Feature 3 */}
-          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-rose-500/50 transition-all group shadow-sm">
-            <div className="size-10 rounded bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 mb-6 group-hover:scale-105 transition-transform">
+          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-emerald-500/50 transition-all group shadow-sm">
+            <div className="size-10 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-6 group-hover:scale-105 transition-transform">
               <ShieldCheckIcon className="size-5" />
             </div>
             <h3 className="text-lg font-semibold text-stone-900 dark:text-white mb-2">Security & Leak Audits</h3>
@@ -460,8 +457,8 @@ export default function Home() {
           </div>
 
           {/* Feature 4 */}
-          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-rose-500/50 transition-all group shadow-sm">
-            <div className="size-10 rounded bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 mb-6 group-hover:scale-105 transition-transform">
+          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-emerald-500/50 transition-all group shadow-sm">
+            <div className="size-10 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-6 group-hover:scale-105 transition-transform">
               <GithubLogoIcon className="size-5" />
             </div>
             <h3 className="text-lg font-semibold text-stone-900 dark:text-white mb-2">Single-Click GitHub OAuth</h3>
@@ -471,8 +468,8 @@ export default function Home() {
           </div>
 
           {/* Feature 5 */}
-          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-rose-500/50 transition-all group shadow-sm">
-            <div className="size-10 rounded bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 mb-6 group-hover:scale-105 transition-transform">
+          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-emerald-500/50 transition-all group shadow-sm">
+            <div className="size-10 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-6 group-hover:scale-105 transition-transform">
               <CodeIcon className="size-5" />
             </div>
             <h3 className="text-lg font-semibold text-stone-900 dark:text-white mb-2">Custom Team Rules</h3>
@@ -482,8 +479,8 @@ export default function Home() {
           </div>
 
           {/* Feature 6 */}
-          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-rose-500/50 transition-all group shadow-sm">
-            <div className="size-10 rounded bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 mb-6 group-hover:scale-105 transition-transform">
+          <div className="rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/60 p-8 hover:border-emerald-500/50 transition-all group shadow-sm">
+            <div className="size-10 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-6 group-hover:scale-105 transition-transform">
               <SquaresFourIcon className="size-5" />
             </div>
             <h3 className="text-lg font-semibold text-stone-900 dark:text-white mb-2">Developer Dashboard</h3>
@@ -498,8 +495,8 @@ export default function Home() {
       <section id="how-it-works" className="py-24 px-6 bg-stone-100/80 dark:bg-stone-950/60 border-y border-stone-300/80 dark:border-stone-800/80 relative z-10 transition-colors">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <Badge className="bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20 text-xs px-3 py-1 mb-4 font-mono">
-              手順 · 4-Step Workflow
+            <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 text-xs px-3 py-1 mb-4 font-mono">
+              4-Step Workflow
             </Badge>
             <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-stone-900 dark:text-white mb-4">
               Seamless Integration
@@ -512,7 +509,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Step 1 */}
             <div className="relative p-6 rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/50 shadow-sm">
-              <div className="font-mono text-2xl font-bold text-rose-600 dark:text-rose-400 mb-4">一 / 01</div>
+              <div className="font-mono text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-4">01</div>
               <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-2">Sign In with GitHub</h3>
               <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed mb-4">
                 Single-click GitHub OAuth login. No passwords required.
@@ -522,7 +519,7 @@ export default function Home() {
 
             {/* Step 2 */}
             <div className="relative p-6 rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/50 shadow-sm">
-              <div className="font-mono text-2xl font-bold text-rose-600 dark:text-rose-400 mb-4">二 / 02</div>
+              <div className="font-mono text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-4">02</div>
               <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-2">Connect Repositories</h3>
               <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
                 Select repositories from your GitHub account for ReTrack to monitor.
@@ -531,7 +528,7 @@ export default function Home() {
 
             {/* Step 3 */}
             <div className="relative p-6 rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/50 shadow-sm">
-              <div className="font-mono text-2xl font-bold text-rose-600 dark:text-rose-400 mb-4">三 / 03</div>
+              <div className="font-mono text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-4">03</div>
               <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-2">Pinecone Vector Sync</h3>
               <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
                 ReTrack embeds your codebase structure into vector storage automatically.
@@ -540,7 +537,7 @@ export default function Home() {
 
             {/* Step 4 */}
             <div className="relative p-6 rounded-xl border border-stone-300/80 dark:border-stone-800 bg-white dark:bg-stone-900/50 shadow-sm">
-              <div className="font-mono text-2xl font-bold text-rose-600 dark:text-rose-400 mb-4">四 / 04</div>
+              <div className="font-mono text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-4">04</div>
               <h3 className="text-base font-semibold text-stone-900 dark:text-white mb-2">PR Review Comments</h3>
               <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
                 Open a Pull Request on GitHub to receive instant, line-by-line AI comments.
@@ -553,8 +550,8 @@ export default function Home() {
       {/* Pricing Section */}
       <section id="pricing" className="py-24 px-6 max-w-7xl mx-auto relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <Badge className="bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20 text-xs px-3 py-1 mb-4 font-mono">
-            料金 · Simple Pricing
+          <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 text-xs px-3 py-1 mb-4 font-mono">
+            Simple Pricing
           </Badge>
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-stone-900 dark:text-white mb-4">
             Start Reviewing for Free
@@ -576,16 +573,16 @@ export default function Home() {
 
               <ul className="space-y-3 text-sm text-stone-700 dark:text-stone-300 mb-8">
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-rose-600 dark:text-rose-400 shrink-0" /> Up to 3 GitHub Repositories
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Up to 3 GitHub Repositories
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-rose-600 dark:text-rose-400 shrink-0" /> Unlimited Automated PR Reviews
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Unlimited Automated PR Reviews
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-rose-600 dark:text-rose-400 shrink-0" /> Standard Pinecone Vector Indexing
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Standard Pinecone Vector Indexing
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-rose-600 dark:text-rose-400 shrink-0" /> Single GitHub Sign-In Access
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Single GitHub Sign-In Access
                 </li>
               </ul>
             </div>
@@ -597,36 +594,36 @@ export default function Home() {
           </div>
 
           {/* Pro Tier */}
-          <div className="rounded-2xl border border-rose-500/50 bg-rose-50/30 dark:bg-rose-950/20 p-8 flex flex-col justify-between relative overflow-hidden shadow-md">
-            <div className="absolute top-0 right-0 bg-rose-600 text-white font-mono text-[10px] uppercase font-bold px-3 py-1 rounded-bl-md">
+          <div className="rounded-2xl border border-emerald-500/50 bg-emerald-50/30 dark:bg-emerald-950/20 p-8 flex flex-col justify-between relative overflow-hidden shadow-md">
+            <div className="absolute top-0 right-0 bg-emerald-600 text-white font-mono text-[10px] uppercase font-bold px-3 py-1 rounded-bl-md">
               Recommended
             </div>
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-stone-900 dark:text-white">Pro Developer</h3>
-                <Badge className="bg-rose-500/20 text-rose-700 dark:text-rose-300 border-rose-500/30">Popular</Badge>
+                <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/30">Popular</Badge>
               </div>
               <div className="font-mono text-4xl font-extrabold text-stone-900 dark:text-white mb-6">₹999 <span className="text-xs text-stone-500 dark:text-stone-400 font-sans font-normal">/ month</span></div>
 
               <ul className="space-y-3 text-sm text-stone-700 dark:text-stone-300 mb-8">
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-rose-600 dark:text-rose-400 shrink-0" /> Unlimited GitHub Repositories
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Unlimited GitHub Repositories
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-rose-600 dark:text-rose-400 shrink-0" /> Priority Pinecone Vector Indexing
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Priority Pinecone Vector Indexing
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-rose-600 dark:text-rose-400 shrink-0" /> Custom Team Rules & Guidelines
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> Custom Team Rules & Guidelines
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckIcon className="size-4 text-rose-600 dark:text-rose-400 shrink-0" /> In-depth Security & OWASP Audits
+                  <CheckIcon className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> In-depth Security & OWASP Audits
                 </li>
               </ul>
             </div>
 
             <GithubAuthButton
               label="Get Started with Pro"
-              className="w-full rounded-md bg-rose-600 hover:bg-rose-700 text-white font-medium py-3 shadow-sm"
+              className="w-full rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 shadow-sm"
             />
           </div>
         </div>
@@ -645,7 +642,7 @@ export default function Home() {
           <GithubAuthButton
             label="Sign Up with GitHub Now"
             size="lg"
-            className="rounded-md bg-rose-600 hover:bg-rose-700 text-white font-medium px-9 py-6 text-lg shadow-sm transition-transform hover:scale-105"
+            className="rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-9 py-6 text-lg shadow-sm transition-transform hover:scale-105"
           />
         </div>
       </section>
@@ -661,7 +658,7 @@ export default function Home() {
               height={28}
               className="rounded object-cover"
             />
-            <span className="font-semibold text-stone-900 dark:text-white text-sm">ReTrack · リトラック</span>
+            <span className="font-semibold text-stone-900 dark:text-white text-sm">ReTrack</span>
           </div>
 
           <div className="flex items-center gap-6 text-xs text-stone-500 font-mono">
@@ -683,5 +680,3 @@ export default function Home() {
     </div>
   );
 }
-
-
