@@ -24,26 +24,19 @@ import { redirect } from "next/navigation";
 export async function startProSubscription() {
   const session = await getServerSession();
 
-  if (!session) {
+  if (!session?.user) {
     redirect("/sign-in");
   }
 
   return createProSubscription(session.user.id);
 }
 
-/**
- * Cancels the current user's Pro subscription at period end (or immediately per provider rules).
- *
- * @description Does not return data to the client; the UI typically revalidates or
- * refreshes subscription state after this action completes.
- * @returns Resolves when cancellation has been recorded with the payment provider.
- */
 export async function cancelSubscription() {
   const session = await getServerSession();
 
-  if (!session) {
+  if (!session?.user) {
     redirect("/sign-in");
   }
 
-  await cancelProSubscription(session.user.id);
+  return cancelProSubscription(session.user.id);
 }

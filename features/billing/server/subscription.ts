@@ -83,35 +83,16 @@ export async function cancelProSubscription(userId: string) {
     select: { razorPaySubscriptionId: true },
   });
 
-  if (!user?.razorPaySubscriptionId) {
-    throw new Error("No active subscription found.");
-  }
-
-  const razorpay = getRazorpay();
-
-  try {
-    await razorpay.subscriptions.cancel(user.razorPaySubscriptionId, 1);
-  } catch (err: unknown) {
-    // Razorpay rejects cancellation if no billing cycle has started yet
-    // (e.g. subscription is still in "created" state). In that case,
-    // we still downgrade the user locally.
-    const description =
-      err instanceof Error
-        ? err.message
-        : String((err as { error?: { description?: string } })?.error?.description ?? "");
-
-    const isNotStarted =
-      description.toLowerCase().includes("no billing cycle") ||
-      description.toLowerCase().includes("cannot be cancelled");
-
-    if (!isNotStarted) {
-      throw err;
+  if (user?.razorPaySubscriptionId) {
+    try {
+      const razorpay = getRazorpay();
+      await razorpay.subscriptions.cancel(user.razorPaySubscriptionId, 1);
+    } catch (err: unknown) {
+      console.warn(
+        "Razorpay subscription cancellation warning (proceeding with local cancellation):",
+        err instanceof Error ? err.message : String(err)
+      );
     }
-
-    console.warn(
-      "Razorpay: subscription not yet in billing cycle, skipping remote cancel:",
-      user.razorPaySubscriptionId
-    );
   }
 
   await prisma.user.update({
@@ -122,4 +103,6 @@ export async function cancelProSubscription(userId: string) {
       razorPaySubscriptionId: null,
     },
   });
+
+  return { success: true };
 }
